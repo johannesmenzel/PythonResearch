@@ -36,14 +36,13 @@ for s in range(numsamples):
 for s in range(numsamples):
     for c in range(numchannels):
         output[c,s] = input[c,s]
+         
 
-fft = np.fft.fft(output)         
-print(fft)
 
 # PLOTTING FUNCTION
 plt.figure(1)
 for c in range(numchannels):
-    plt.subplot(221+c)
+    plt.subplot(211+c)
     plt.plot(sample, input[c,sample], 'b-', sample, output[c,sample], 'r-')
 # xticks()
     plt.xlim(( plotstart , plotstop ))
@@ -51,5 +50,4 @@ for c in range(numchannels):
     # plt.title( 'channel ' + repr(c) )
     plt.xlabel( 'samples')
     plt.ylabel( 'amp ch ' + repr(c) )
-plt.subplot(223)
 plt.show()
