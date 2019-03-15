@@ -1,24 +1,23 @@
 #!/usr/bin/env python3
 # from pylab import *
 import numpy as np
-# import wave # not needed (yet)
-# import struct
 import matplotlib.pyplot as plt
+from fft_test import frequency
 
 # CONSTANTS
 # Test signal vars
 samplerate = 48000.0
 numchannels = 2
 numsamples = 48000
-frequency = 1000.0
+frequency = 5000.0
 amplitude = 1.0
-sample = np.arange(0, numsamples, 1)
+sample = np.arange(numsamples)
 # Plot vars
-plotstart = 0
-plotstop = numsamples
+plotstart = 10000
+plotstop = 10000 + 1000 / frequency
 
 # RUNTIME
-envDb = 0.0
+envDb = 0.0 #for compressor
 
 # BUFFERS
 input = np.zeros( (numchannels,numsamples) )
@@ -32,24 +31,28 @@ for s in range(numsamples):
         else:
             input[c,s] = np.sin(2 * np.pi * frequency * s/samplerate)
 
+
+
 # PROCESSING PER CHANNEL
 for s in range(numsamples):
     for c in range(numchannels):
-        output[c,s] = input[c,s]
+        output[c,s] = np.tanh(5.0 * input[c,s])
 
 fft = np.fft.fft(output)         
-print(fft)
+frequencies = np.abs(fft)
 
 # PLOTTING FUNCTION
 plt.figure(1)
 for c in range(numchannels):
     plt.subplot(221+c)
     plt.plot(sample, input[c,sample], 'b-', sample, output[c,sample], 'r-')
-# xticks()
+    # plt.xticks()
     plt.xlim(( plotstart , plotstop ))
     plt.ylim(( -2.0 , 2.0 ))
     # plt.title( 'channel ' + repr(c) )
     plt.xlabel( 'samples')
     plt.ylabel( 'amp ch ' + repr(c) )
-plt.subplot(223)
+    plt.subplot(223 + c)
+    plt.plot(frequencies[c])
+    plt.xlim((20, 20000))
 plt.show()
